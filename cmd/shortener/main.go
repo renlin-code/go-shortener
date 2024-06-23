@@ -5,20 +5,24 @@ import (
 	"os"
 
 	"github.com/renlin-code/go-shortener/internal/config"
+	sl "github.com/renlin-code/go-shortener/internal/lib/logger/slog"
+	"github.com/renlin-code/go-shortener/internal/storage/sqlite"
 )
 
 func main() {
 	cfg := config.MustLoad()
-
-	//TODO: init logger (slog)
 
 	log := setupLogger(cfg.Env)
 
 	log.Info("starting shortener", slog.String("env", cfg.Env))
 	log.Debug("debug messages enabled")
 
-	//TODO: init storage (SQL Lite)
+	_, err := sqlite.NewStorage(cfg.StoragePath)
 
+	if err != nil {
+		log.Error("failed to init storage", sl.Err(err))
+		os.Exit(1)
+	}
 	//TODO: init router (chi)
 
 	//TODO: run server
