@@ -17,12 +17,12 @@ func main() {
 	log.Info("starting shortener", slog.String("env", cfg.Env))
 	log.Debug("debug messages enabled")
 
-	_, err := sqlite.NewStorage(cfg.StoragePath)
-
+	storage, err := sqlite.NewStorage(cfg.StoragePath)
 	if err != nil {
 		log.Error("failed to init storage", sl.Err(err))
 		os.Exit(1)
 	}
+
 	//TODO: init router (chi)
 
 	//TODO: run server
