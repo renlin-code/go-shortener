@@ -2,8 +2,10 @@ package main
 
 import (
 	"log/slog"
+	"net/http"
 	"os"
 
+	"github.com/renlin-code/go-shortener/internal/http-server/handlers/url/save"
 	mwLogger "github.com/renlin-code/go-shortener/internal/http-server/middleware/logger"
 
 	"github.com/go-chi/chi/v5"
@@ -22,7 +24,7 @@ func main() {
 	log.Info("starting shortener", slog.String("env", cfg.Env))
 	log.Debug("debug messages enabled")
 
-	_, err := sqlite.NewStorage(cfg.StoragePath)
+	storage, err := sqlite.NewStorage(cfg.StoragePath)
 	if err != nil {
 		log.Error("failed to init storage", sl.Err(err))
 		os.Exit(1)
@@ -35,7 +37,24 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	//TODO: run server
+	router.Post("/api/v1/url", save.NewHandler(log, storage))
+
+	log.Info("starting server...", slog.String("address", cfg.Address))
+
+	srv := &http.Server{
+		Addr:         cfg.Address,
+		Handler:      router,
+		ReadTimeout:  cfg.HTTPServer.Timeout,
+		WriteTimeout: cfg.HTTPServer.Timeout,
+		IdleTimeout:  cfg.HTTPServer.Timeout,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server")
+		os.Exit(1)
+	}
+
+	log.Error("server stopped")
 }
 
 const (
