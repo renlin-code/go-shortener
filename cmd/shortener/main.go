@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/renlin-code/go-shortener/internal/http-server/handlers/url/delete"
+	"github.com/renlin-code/go-shortener/internal/http-server/handlers/url/redirect"
 	"github.com/renlin-code/go-shortener/internal/http-server/handlers/url/save"
 	mwLogger "github.com/renlin-code/go-shortener/internal/http-server/middleware/logger"
 
@@ -37,7 +39,9 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Post("/api/v1/url", save.NewHandler(log, storage))
+	router.Post("/url", save.NewHandler(log, storage))
+	router.Get("/{alias}", redirect.NewHandler(log, storage))
+	router.Delete("/{alias}", delete.NewHandler(log, storage))
 
 	log.Info("starting server...", slog.String("address", cfg.Address))
 

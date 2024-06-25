@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 	"github.com/renlin-code/go-shortener/internal/lib/api/response"
-	chi "github.com/renlin-code/go-shortener/internal/lib/api/response/chi"
+	chiResponse "github.com/renlin-code/go-shortener/internal/lib/api/response/chi"
 	sl "github.com/renlin-code/go-shortener/internal/lib/logger/slog"
 	"github.com/renlin-code/go-shortener/internal/lib/random"
 	"github.com/renlin-code/go-shortener/internal/storage"
@@ -47,7 +47,7 @@ func NewHandler(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 		if err != nil {
 			log.Error("failed to decode request", sl.Err(err))
 
-			chi.ResponseWithStatusCode(w, r, http.StatusBadRequest, response.Error("failed to decode request"))
+			chiResponse.ResponseWithStatusCode(w, r, http.StatusBadRequest, response.Error("failed to decode request"))
 
 			return
 		}
@@ -59,7 +59,7 @@ func NewHandler(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 
 			log.Error("invalid request", sl.Err(err))
 
-			chi.ResponseWithStatusCode(w, r, http.StatusBadRequest, response.ValidationError(validateErr))
+			chiResponse.ResponseWithStatusCode(w, r, http.StatusBadRequest, response.ValidationError(validateErr))
 
 			return
 		}
@@ -74,7 +74,7 @@ func NewHandler(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 		if errors.Is(err, storage.ErrURLAlreadyExists) {
 			log.Info("url already exists", slog.String("url", req.URL))
 
-			chi.ResponseWithStatusCode(w, r, http.StatusConflict, response.Error("url already exists"))
+			chiResponse.ResponseWithStatusCode(w, r, http.StatusConflict, response.Error("url already exists"))
 
 			return
 		}
@@ -82,14 +82,14 @@ func NewHandler(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 		if err != nil {
 			log.Error("failed to save url", sl.Err(err))
 
-			chi.ResponseWithStatusCode(w, r, http.StatusInternalServerError, response.Error("failed to save url"))
+			chiResponse.ResponseWithStatusCode(w, r, http.StatusInternalServerError, response.Error("failed to save url"))
 
 			return
 		}
 
 		log.Info("url saved", slog.Int64("id", id))
 
-		chi.ResponseWithStatusCode(w, r, http.StatusCreated, Response{
+		chiResponse.ResponseWithStatusCode(w, r, http.StatusCreated, Response{
 			Response: response.OK(),
 			Alias:    alias,
 		})
