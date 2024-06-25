@@ -25,13 +25,13 @@ type Response struct {
 	Alias string `json:"alias,omitempty"`
 }
 
-const aliasLength = 4
+const aliasLength = 6
 
 type URLSaver interface {
 	SaveURL(urlToSave string, alias string) (int64, error)
 }
 
-func NewHandler(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
+func NewHandler(log *slog.Logger, urlSaver URLSaver, aliasEnabled bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.url.save.NewHandler"
 
@@ -64,7 +64,12 @@ func NewHandler(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 			return
 		}
 
-		alias := req.Alias
+		var alias string
+
+		if aliasEnabled {
+			alias = req.Alias
+		}
+
 		if alias == "" {
 			alias = random.NewRandomString(aliasLength)
 		}

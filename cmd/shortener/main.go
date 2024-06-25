@@ -39,13 +39,14 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Route("/url", func(r chi.Router) {
+	router.Route("/admin", func(r chi.Router) {
 		r.Use(middleware.BasicAuth("go-shortener", map[string]string{
 			cfg.HTTPServer.Username: cfg.HTTPServer.Password,
 		}))
-		r.Post("/", save.NewHandler(log, storage))
+		r.Post("/", save.NewHandler(log, storage, true))
 		r.Delete("/{alias}", delete.NewHandler(log, storage))
 	})
+	router.Post("/", save.NewHandler(log, storage, false))
 	router.Get("/{alias}", redirect.NewHandler(log, storage))
 
 	log.Info("starting server...", slog.String("address", cfg.Address))
