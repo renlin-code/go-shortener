@@ -16,7 +16,7 @@ import (
 
 type Response struct {
 	response.Response
-	Alias string `json:"alias,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type URLDeleter interface {
@@ -61,7 +61,7 @@ func NewHandler(log *slog.Logger, urlDeleter URLDeleter) http.HandlerFunc {
 
 		chiResponse.ResponseWithStatusCode(w, r, http.StatusOK, Response{
 			Response: response.OK(),
-			Alias:    alias,
+			Message:  alias + " deleted",
 		})
 	}
 }
