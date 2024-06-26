@@ -27,7 +27,7 @@ func GetRedirect(url string) (string, error) {
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusFound {
-		return "", fmt.Errorf("%s: %w: %d", op, ErrInvalidStatusCode, resp.StatusCode)
+		return "", fmt.Errorf("%s: %w: %d, %s", op, ErrInvalidStatusCode, resp.StatusCode, url)
 	}
 
 	return resp.Header.Get("Location"), nil
