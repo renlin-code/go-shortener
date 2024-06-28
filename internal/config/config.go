@@ -1,13 +1,10 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -26,13 +23,14 @@ type HTTPServer struct {
 
 func MustLoad() *Config {
 	const baseError = "error loading .env file"
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("%s: %s", baseError, err.Error())
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatalf("%s: %s", baseError, err.Error())
+	// }
 
 	var cfg Config
 
+	// ENV
 	cfg.Env = os.Getenv("ENV")
 	if cfg.Env == "" {
 		log.Fatalf("%s: ENV is required", baseError)
@@ -41,26 +39,31 @@ func MustLoad() *Config {
 		log.Fatalf("%s: invalid ENV value. Must be 'local', 'dev' or 'prod'", baseError)
 	}
 
+	// STORAGE_PATH
 	cfg.StoragePath = os.Getenv("STORAGE_PATH")
 	if cfg.Env == "" {
 		log.Fatalf("%s: STORAGE_PATH is required", baseError)
 	}
 
+	// SERVER_ADDRESS
 	cfg.HTTPServer.Address = os.Getenv("SERVER_ADDRESS")
 	if cfg.Env == "" {
 		log.Fatalf("%s: SERVER_ADDRESS is required", baseError)
 	}
 
+	//SERVER_ADMIN_USERNAME
 	cfg.HTTPServer.Username = os.Getenv("SERVER_ADMIN_USERNAME")
 	if cfg.Env == "" {
 		log.Fatalf("%s: SERVER_ADMIN_USERNAME is required", baseError)
 	}
 
-	cfg.HTTPServer.Password = os.Getenv("SERVER_ADMIN_PASWORD")
+	//SERVER_ADMIN_PASSWORD
+	cfg.HTTPServer.Password = os.Getenv("SERVER_ADMIN_PASSWORD")
 	if cfg.Env == "" {
-		log.Fatalf("%s: SERVER_ADMIN_PASWORD is required", baseError)
+		log.Fatalf("%s: SERVER_ADMIN_PASSWORD is required", baseError)
 	}
 
+	//SERVER_TIMEOUT
 	timeOutString := os.Getenv("SERVER_TIMEOUT")
 	if timeOutString == "" {
 		log.Fatalf("%s: SERVER_TIMEOUT is required", baseError)
@@ -71,6 +74,7 @@ func MustLoad() *Config {
 	}
 	cfg.HTTPServer.Timeout = time.Duration(timeOutInt) * time.Second
 
+	//SERVER_IDLE_TIMEOUT
 	idleTimeOutString := os.Getenv("SERVER_IDLE_TIMEOUT")
 	if idleTimeOutString == "" {
 		log.Fatalf("%s: SERVER_IDLE_TIMEOUT is required", baseError)
@@ -81,6 +85,5 @@ func MustLoad() *Config {
 	}
 	cfg.HTTPServer.IdleTimeout = time.Duration(idleTimeOutInt) * time.Second
 
-	fmt.Println("config", cfg)
 	return &cfg
 }

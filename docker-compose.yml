@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    env_file:
+      - .env 
+    ports:
+      - 8082:8082
+    volumes:
+      - ./storage:/storage
+    restart: always
+      
