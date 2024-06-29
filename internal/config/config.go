@@ -14,7 +14,7 @@ type Config struct {
 }
 
 type HTTPServer struct {
-	Address     string
+	Port        string
 	Timeout     time.Duration
 	IdleTimeout time.Duration
 	Username    string
@@ -45,10 +45,10 @@ func MustLoad() *Config {
 		log.Fatalf("%s: STORAGE_PATH is required", baseError)
 	}
 
-	// SERVER_ADDRESS
-	cfg.HTTPServer.Address = os.Getenv("SERVER_ADDRESS")
+	// SERVER_PORT
+	cfg.HTTPServer.Port = os.Getenv("SERVER_PORT")
 	if cfg.Env == "" {
-		log.Fatalf("%s: SERVER_ADDRESS is required", baseError)
+		log.Fatalf("%s: SERVER_PORT is required", baseError)
 	}
 
 	//SERVER_ADMIN_USERNAME

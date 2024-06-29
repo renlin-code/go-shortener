@@ -49,14 +49,14 @@ func main() {
 	router.Post("/", save.NewHandler(log, storage, false))
 	router.Get("/{alias}", redirect.NewHandler(log, storage))
 
-	log.Info("starting server...", slog.String("address", cfg.Address))
+	log.Info("starting server...", slog.String("port", cfg.Port))
 
 	srv := &http.Server{
-		Addr:         cfg.Address,
+		Addr:         ":" + cfg.Port,
 		Handler:      router,
 		ReadTimeout:  cfg.HTTPServer.Timeout,
 		WriteTimeout: cfg.HTTPServer.Timeout,
-		IdleTimeout:  cfg.HTTPServer.Timeout,
+		IdleTimeout:  cfg.HTTPServer.IdleTimeout,
 	}
 
 	if err := srv.ListenAndServe(); err != nil {
