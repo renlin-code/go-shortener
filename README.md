@@ -40,7 +40,7 @@ It generates a short URL from a base URL provided as a parameter. For this short
 
 ---
 
-#### Redirect short URL
+#### Redirect a short URL
 
 Redirect a short URL to its base URL.
 
