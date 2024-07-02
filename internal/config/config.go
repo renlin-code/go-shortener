@@ -41,25 +41,25 @@ func MustLoad() *Config {
 
 	// STORAGE_PATH
 	cfg.StoragePath = os.Getenv("STORAGE_PATH")
-	if cfg.Env == "" {
+	if cfg.StoragePath == "" {
 		log.Fatalf("%s: STORAGE_PATH is required", baseError)
 	}
 
 	// SERVER_PORT
 	cfg.HTTPServer.Port = os.Getenv("SERVER_PORT")
-	if cfg.Env == "" {
+	if cfg.HTTPServer.Port == "" {
 		log.Fatalf("%s: SERVER_PORT is required", baseError)
 	}
 
 	//SERVER_ADMIN_USERNAME
 	cfg.HTTPServer.Username = os.Getenv("SERVER_ADMIN_USERNAME")
-	if cfg.Env == "" {
+	if cfg.HTTPServer.Username == "" {
 		log.Fatalf("%s: SERVER_ADMIN_USERNAME is required", baseError)
 	}
 
 	//SERVER_ADMIN_PASSWORD
 	cfg.HTTPServer.Password = os.Getenv("SERVER_ADMIN_PASSWORD")
-	if cfg.Env == "" {
+	if cfg.HTTPServer.Password == "" {
 		log.Fatalf("%s: SERVER_ADMIN_PASSWORD is required", baseError)
 	}
 
